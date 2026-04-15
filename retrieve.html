@@ -61,8 +61,8 @@
     window.addEventListener("load", loadChores);
 
     function loadChores() {
-      fetch("http://localhost:7777/retrieve")
-        .then(response => response.json())
+      fetch("/retrieve")    
+          .then(response => response.json())
         .then(data => {
           const tbody = document.getElementById("records");
           tbody.innerHTML = "";

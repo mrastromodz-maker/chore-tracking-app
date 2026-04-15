@@ -106,7 +106,7 @@
         notes: document.getElementById("notes").value
       };
 
-      fetch("http://localhost:7777/create", {
+      fetch("/create", {        
         method: "POST",
         headers: {
           "Content-Type": "application/json"

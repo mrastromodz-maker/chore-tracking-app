@@ -46,7 +46,7 @@
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
 
-      fetch("http://localhost:7777/delete/" + id, {
+      fetch("/delete/" + id, {
         method: "DELETE"
       })
       .then(response => response.json())

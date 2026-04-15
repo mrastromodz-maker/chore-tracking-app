@@ -106,7 +106,7 @@
     function loadChore() {
       const id = getChoreId();
 
-      fetch("http://localhost:7777/retrieve-one/" + id)
+      fetch("/retrieve-one/" + id)
         .then(response => response.json())
         .then(chore => {
           document.getElementById("id").value = chore.id ?? "";
