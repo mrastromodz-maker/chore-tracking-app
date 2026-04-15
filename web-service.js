@@ -5,11 +5,9 @@ const { MongoClient } = require("mongodb");
 
 const app = express();
 
-// MongoDB Atlas connection string will be stored in Railway variables
 const PORT = process.env.PORT || 7777;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
 
-// Database + collection
 const DB_NAME = "biz";
 const COLLECTION = "chores";
 
@@ -17,28 +15,27 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Mongo client
 const client = new MongoClient(MONGO_URI);
 
-async function getCollection() {
-  if (!MONGO_URI) {
-    throw new Error("MONGO_URI is not set. Add it in Railway Variables.");
-  }
+let table;
 
-  await client.connect();
-  return client.db(DB_NAME).collection(COLLECTION);
+async function connectToDatabase() {
+  if (!table) {
+    await client.connect();
+    table = client.db(DB_NAME).collection(COLLECTION);
+    console.log("Connected to MongoDB");
+  }
+  return table;
 }
 
-// Home page
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Retrieve all chores
 app.get("/retrieve", async (req, res) => {
   try {
-    const table = await getCollection();
-    const rows = await table.find({}).sort({ id: 1 }).toArray();
+    const chores = await connectToDatabase();
+    const rows = await chores.find({}).sort({ id: 1 }).toArray();
     res.json(rows);
   } catch (error) {
     console.error("Retrieve error:", error);
@@ -46,11 +43,10 @@ app.get("/retrieve", async (req, res) => {
   }
 });
 
-// Retrieve one chore by id
 app.get("/retrieve-one/:id", async (req, res) => {
   try {
-    const table = await getCollection();
-    const row = await table.findOne({ id: parseInt(req.params.id) });
+    const chores = await connectToDatabase();
+    const row = await chores.findOne({ id: parseInt(req.params.id) });
     res.json(row || {});
   } catch (error) {
     console.error("Retrieve one error:", error);
@@ -58,10 +54,9 @@ app.get("/retrieve-one/:id", async (req, res) => {
   }
 });
 
-// Create chore
 app.post("/create", async (req, res) => {
   try {
-    const table = await getCollection();
+    const chores = await connectToDatabase();
 
     const record = {
       id: parseInt(req.body.id),
@@ -75,7 +70,7 @@ app.post("/create", async (req, res) => {
       createdAt: new Date()
     };
 
-    const result = await table.insertOne(record);
+    const result = await chores.insertOne(record);
     res.json({ ok: true, insertedId: result.insertedId });
   } catch (error) {
     console.error("Create error:", error);
@@ -83,10 +78,9 @@ app.post("/create", async (req, res) => {
   }
 });
 
-// Update chore
 app.put("/update", async (req, res) => {
   try {
-    const table = await getCollection();
+    const chores = await connectToDatabase();
 
     const where = { id: parseInt(req.body.id) };
     const changes = {
@@ -101,7 +95,7 @@ app.put("/update", async (req, res) => {
       }
     };
 
-    const result = await table.updateOne(where, changes);
+    const result = await chores.updateOne(where, changes);
     res.json({ ok: true, modifiedCount: result.modifiedCount });
   } catch (error) {
     console.error("Update error:", error);
@@ -109,11 +103,10 @@ app.put("/update", async (req, res) => {
   }
 });
 
-// Delete chore
 app.delete("/delete/:id", async (req, res) => {
   try {
-    const table = await getCollection();
-    const result = await table.deleteOne({ id: parseInt(req.params.id) });
+    const chores = await connectToDatabase();
+    const result = await chores.deleteOne({ id: parseInt(req.params.id) });
     res.json({ ok: true, deletedCount: result.deletedCount });
   } catch (error) {
     console.error("Delete error:", error);
@@ -121,7 +114,6 @@ app.delete("/delete/:id", async (req, res) => {
   }
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
