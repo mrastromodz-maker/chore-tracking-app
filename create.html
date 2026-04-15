@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Create Chore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="styles/style2.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="main">
+
+    <aside class="menu">
+      <div class="brand">
+        <div class="brand-badge"></div>
+        <h2>Chore Tracker</h2>
+      </div>
+      <p class="hint">Navigate</p>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a class="active" href="create.html">Create</a></li>
+        <li><a href="retrieve.html">Retrieve</a></li>
+        <li><a href="update.html">Update</a></li>
+        <li><a href="delete.html">Delete</a></li>
+      </ul>
+    </aside>
+
+    <main class="meat">
+      <h1 class="page-title">Create Chore</h1>
+      <p class="page-sub">Add a new chore to the tracker.</p>
+
+      <section class="panel">
+        <img src="images/create.avif" alt="Create chore">
+        <div class="panel-body">
+          <form class="form-grid" onsubmit="return false;">
+            <div>
+              <label for="id">Chore ID *</label>
+              <input id="id" type="number" placeholder="101">
+            </div>
+
+            <div>
+              <label for="title">Chore Title *</label>
+              <input id="title" type="text" placeholder="Wash dishes">
+            </div>
+
+            <div>
+              <label for="assignee">Assigned To *</label>
+              <input id="assignee" type="text" placeholder="Matthew">
+            </div>
+
+            <div>
+              <label for="dueDate">Due Date *</label>
+              <input id="dueDate" type="date">
+            </div>
+
+            <div>
+              <label for="priority">Priority *</label>
+              <select id="priority">
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="status">Status *</label>
+              <select id="status">
+                <option value="To Do" selected>To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="room">Room / Area *</label>
+              <input id="room" type="text" placeholder="Kitchen">
+            </div>
+
+            <div class="full-width">
+              <label for="notes">Notes</label>
+              <textarea id="notes" placeholder="Extra details about the chore"></textarea>
+            </div>
+
+            <div class="full-width">
+              <button id="createBtn" class="btn primary" type="button">Save Chore</button>
+              <button class="btn" type="reset">Reset</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    document.getElementById("createBtn").addEventListener("click", createChore);
+
+    function createChore() {
+      const chore = {
+        id: document.getElementById("id").value,
+        title: document.getElementById("title").value,
+        assignee: document.getElementById("assignee").value,
+        dueDate: document.getElementById("dueDate").value,
+        priority: document.getElementById("priority").value,
+        status: document.getElementById("status").value,
+        room: document.getElementById("room").value,
+        notes: document.getElementById("notes").value
+      };
+
+      fetch("http://localhost:7777/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(chore)
+      })
+      .then(response => response.json())
+      .then(() => {
+        window.location.href = "retrieve.html";
+      })
+      .catch(error => {
+        console.error("Error creating chore:", error);
+      });
+    }
+  </script>
+</body>
+</html>

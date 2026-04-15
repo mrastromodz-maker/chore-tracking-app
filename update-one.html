@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Edit Chore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="styles/style2.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="main">
+
+    <aside class="menu">
+      <div class="brand">
+        <div class="brand-badge"></div>
+        <h2>Chore Tracker</h2>
+      </div>
+      <p class="hint">Navigate</p>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="create.html">Create</a></li>
+        <li><a href="retrieve.html">Retrieve</a></li>
+        <li><a class="active" href="update.html">Update</a></li>
+        <li><a href="delete.html">Delete</a></li>
+      </ul>
+    </aside>
+
+    <main class="meat">
+      <h1 class="page-title">Edit Chore</h1>
+      <p class="page-sub">Update the selected chore below.</p>
+
+      <section class="panel">
+        <img src="images/update.jpg" alt="Edit task">
+        <div class="panel-body">
+          <form class="form-grid" onsubmit="return false;">
+            <div>
+              <label for="id">Chore ID</label>
+              <input id="id" type="text" readonly>
+            </div>
+
+            <div>
+              <label for="title">Chore Title</label>
+              <input id="title" type="text">
+            </div>
+
+            <div>
+              <label for="assignee">Assigned To</label>
+              <input id="assignee" type="text">
+            </div>
+
+            <div>
+              <label for="dueDate">Due Date</label>
+              <input id="dueDate" type="date">
+            </div>
+
+            <div>
+              <label for="priority">Priority</label>
+              <select id="priority">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="status">Status</label>
+              <select id="status">
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="room">Room / Area</label>
+              <input id="room" type="text">
+            </div>
+
+            <div class="notes-section">
+              <label for="notes">Notes</label>
+              <textarea id="notes" placeholder="Update any extra details here"></textarea>
+            </div>
+
+            <div class="buttons-section">
+              <button id="saveBtn" class="btn primary" type="button">Save Changes</button>
+              <a class="btn" href="update.html">Back</a>
+            </div>
+
+          </form>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    window.addEventListener("load", () => {
+      loadChore();
+      document.getElementById("saveBtn").addEventListener("click", saveChore);
+    });
+
+    function getChoreId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("id");
+    }
+
+    function loadChore() {
+      const id = getChoreId();
+
+      fetch("http://localhost:7777/retrieve-one/" + id)
+        .then(response => response.json())
+        .then(chore => {
+          document.getElementById("id").value = chore.id ?? "";
+          document.getElementById("title").value = chore.title ?? "";
+          document.getElementById("assignee").value = chore.assignee ?? "";
+          document.getElementById("dueDate").value = chore.dueDate ?? "";
+          document.getElementById("priority").value = chore.priority ?? "Medium";
+          document.getElementById("status").value = chore.status ?? "To Do";
+          document.getElementById("room").value = chore.room ?? "";
+          document.getElementById("notes").value = chore.notes ?? "";
+        })
+        .catch(error => {
+          console.error("Error loading chore:", error);
+        });
+    }
+
+    function saveChore() {
+      const updatedChore = {
+        id: document.getElementById("id").value,
+        title: document.getElementById("title").value,
+        assignee: document.getElementById("assignee").value,
+        dueDate: document.getElementById("dueDate").value,
+        priority: document.getElementById("priority").value,
+        status: document.getElementById("status").value,
+        room: document.getElementById("room").value,
+        notes: document.getElementById("notes").value
+      };
+
+      fetch("http://localhost:7777/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedChore)
+      })
+      .then(response => response.json())
+      .then(() => {
+        window.location.href = "update.html";
+      })
+      .catch(error => {
+        console.error("Error updating chore:", error);
+      });
+    }
+  </script>
+</body>
+</html>

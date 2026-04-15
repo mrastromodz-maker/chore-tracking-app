@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Update Chore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="styles/style2.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="main">
+
+    <aside class="menu">
+      <div class="brand">
+        <div class="brand-badge"></div>
+        <h2>Chore Tracker</h2>
+      </div>
+      <p class="hint">Navigate</p>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="create.html">Create</a></li>
+        <li><a href="retrieve.html">Retrieve</a></li>
+        <li><a class="active" href="update.html">Update</a></li>
+        <li><a href="delete.html">Delete</a></li>
+      </ul>
+    </aside>
+
+    <main class="meat">
+      <h1 class="page-title">Update Chore</h1>
+      <p class="page-sub">Choose a chore and edit its information.</p>
+
+      <section class="panel">
+        <img src="images/update.jpg" alt="Update chore">
+        <div class="panel-body">
+          <h2>Select a Chore to Edit</h2>
+          <p>Click the Edit button next to any chore.</p>
+
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Edit</th>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Assigned To</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="updateList"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    window.addEventListener("load", loadChores);
+
+    function loadChores() {
+      fetch("http://localhost:7777/retrieve")
+        .then(response => response.json())
+        .then(data => {
+          const tbody = document.getElementById("updateList");
+          tbody.innerHTML = "";
+
+          data.forEach(chore => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td><a class="btn primary" href="update-one.html?id=${chore.id}">Edit</a></td>
+              <td>${chore.id ?? ""}</td>
+              <td>${chore.title ?? ""}</td>
+              <td>${chore.assignee ?? ""}</td>
+              <td>${chore.status ?? ""}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error("Error loading chores:", error);
+        });
+    }
+  </script>
+</body>
+</html>

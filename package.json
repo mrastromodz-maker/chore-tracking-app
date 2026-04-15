@@ -1,0 +1,17 @@
+{
+  "name": "chore-tracking-app",
+  "version": "1.0.0",
+  "description": "Full stack chore tracking app",
+  "main": "web-service.js",
+  "scripts": {
+    "start": "node web-service.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mongodb": "^6.15.0"
+  }
+}

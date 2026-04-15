@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="60" viewBox="0 0 220 60">
+  <rect width="220" height="60" fill="#0ea5e9"/>
+  <circle cx="30" cy="30" r="20" fill="#fff" opacity="0.95"/>
+  <text x="60" y="38" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#fff" font-weight="700">SANZIA CRM</text>
+</svg>

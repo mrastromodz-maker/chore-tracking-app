@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Delete Chore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="styles/style2.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="main">
+
+    <aside class="menu">
+      <div class="brand">
+        <div class="brand-badge"></div>
+        <h2>Chore Tracker</h2>
+      </div>
+      <p class="hint">Navigate</p>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="create.html">Create</a></li>
+        <li><a href="retrieve.html">Retrieve</a></li>
+        <li><a href="update.html">Update</a></li>
+        <li><a class="active" href="delete.html">Delete</a></li>
+      </ul>
+    </aside>
+
+    <main class="meat">
+      <h1 class="page-title">Deleting Chore</h1>
+      <p class="page-sub">Please wait while the selected chore is removed.</p>
+
+      <section class="panel">
+        <img src="images/delete.jpg" alt="Deleting a chore">
+        <div class="panel-body">
+          <h2>Deleting...</h2>
+          <p>The selected chore is being removed from the database.</p>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    window.addEventListener("load", deleteChore);
+
+    function deleteChore() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      fetch("http://localhost:7777/delete/" + id, {
+        method: "DELETE"
+      })
+      .then(response => response.json())
+      .then(() => {
+        window.location.href = "delete.html";
+      })
+      .catch(error => {
+        console.error("Error deleting chore:", error);
+      });
+    }
+  </script>
+</body>
+</html>

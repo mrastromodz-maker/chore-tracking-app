@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Retrieve Chores</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="styles/style2.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="main">
+
+    <aside class="menu">
+      <div class="brand">
+        <div class="brand-badge"></div>
+        <h2>Chore Tracker</h2>
+      </div>
+      <p class="hint">Navigate</p>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="create.html">Create</a></li>
+        <li><a class="active" href="retrieve.html">Retrieve</a></li>
+        <li><a href="update.html">Update</a></li>
+        <li><a href="delete.html">Delete</a></li>
+      </ul>
+    </aside>
+
+    <main class="meat">
+      <h1 class="page-title">Retrieve Chores</h1>
+      <p class="page-sub">View all chores currently stored in the system.</p>
+
+      <section class="panel">
+        <img src="images/retrieve.jpg" alt="Chore list">
+        <div class="panel-body">
+          <h2>Saved Chores</h2>
+          <p>Below is the current list of chores from the database.</p>
+
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Assigned To</th>
+                  <th>Due Date</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Room</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="records"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    window.addEventListener("load", loadChores);
+
+    function loadChores() {
+      fetch("http://localhost:7777/retrieve")
+        .then(response => response.json())
+        .then(data => {
+          const tbody = document.getElementById("records");
+          tbody.innerHTML = "";
+
+          data.forEach(chore => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${chore.id ?? ""}</td>
+              <td>${chore.title ?? ""}</td>
+              <td>${chore.assignee ?? ""}</td>
+              <td>${chore.dueDate ?? ""}</td>
+              <td>${chore.priority ?? ""}</td>
+              <td>${chore.status ?? ""}</td>
+              <td>${chore.room ?? ""}</td>
+              <td>${chore.notes ?? ""}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error("Error loading chores:", error);
+        });
+    }
+  </script>
+</body>
+</html>
