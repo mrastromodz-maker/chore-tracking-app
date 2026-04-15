@@ -75,16 +75,15 @@
               <input id="room" type="text">
             </div>
 
-            <div class="notes-section">
+            <div style="grid-column:1 / -1">
               <label for="notes">Notes</label>
               <textarea id="notes" placeholder="Update any extra details here"></textarea>
             </div>
 
-            <div class="buttons-section">
+            <div style="grid-column:1 / -1; margin-top:.4rem;">
               <button id="saveBtn" class="btn primary" type="button">Save Changes</button>
               <a class="btn" href="update.html">Back</a>
             </div>
-
           </form>
         </div>
       </section>
@@ -120,6 +119,7 @@
         })
         .catch(error => {
           console.error("Error loading chore:", error);
+          alert("Could not load the chore.");
         });
     }
 
@@ -135,20 +135,28 @@
         notes: document.getElementById("notes").value
       };
 
-      fetch("http://localhost:7777/update", {
+      fetch("/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(updatedChore)
       })
-      .then(response => response.json())
-      .then(() => {
-        window.location.href = "update.html";
-      })
-      .catch(error => {
-        console.error("Error updating chore:", error);
-      });
+        .then(response => response.json())
+        .then(data => {
+          console.log("Update response:", data);
+
+          if (data.ok) {
+            alert("Chore updated successfully.");
+            window.location.href = "update.html";
+          } else {
+            alert("Update failed.");
+          }
+        })
+        .catch(error => {
+          console.error("Error updating chore:", error);
+          alert("There was an error updating the chore.");
+        });
     }
   </script>
 </body>
